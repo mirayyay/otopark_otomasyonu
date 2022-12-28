@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+
+namespace projeotopark
+{
+    public partial class otobus_kayit : Form
+    {
+
+        sqlbaglantisi bgl = new sqlbaglantisi();
+        public otobus_kayit()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlCommand komut = new SqlCommand("insert into otobus_bilgileri (otobus_plaka,otobus_markasi,otobus_model,otobus_rengi) values (@p1,@p2,@p3,@p4)", bgl.baglanti());
+            komut.Parameters.AddWithValue("@p1", textBox1.Text);
+            komut.Parameters.AddWithValue("@p2", textBox2.Text);
+            komut.Parameters.AddWithValue("@p3", textBox3.Text);
+            komut.Parameters.AddWithValue("@p4", textBox4.Text);
+            komut.ExecuteReader();
+
+
+            SqlCommand komut1 = new SqlCommand("insert into otobus_vites_tip (otobus_plaka,vites_tip) values (@p11,@p12)", bgl.baglanti());
+            komut1.Parameters.AddWithValue("@p11", textBox1.Text);
+            if (radioButton1.Checked == true)
+            {
+                komut1.Parameters.AddWithValue("@p12", "Otomatik");
+            }
+            else if (radioButton2.Checked == true)
+            {
+                komut1.Parameters.AddWithValue("@p12", "Manuel");
+            }
+            else
+            {
+                komut1.Parameters.AddWithValue("@p12", "Seçim Yapılmadı");
+            }
+            komut1.ExecuteReader();
+
+            SqlCommand komut2 = new SqlCommand("insert into otobus_yakit_turu (otobus_plaka,otobus_yakit_turu) values (@p11,@p21)", bgl.baglanti());
+            komut2.Parameters.AddWithValue("@p11", textBox1.Text);
+            if (radioButton3.Checked == true)
+            {
+                komut2.Parameters.AddWithValue("@p21", "Dizel");
+            }
+            else if (radioButton4.Checked == true)
+            {
+                komut2.Parameters.AddWithValue("@p21", "LPG");
+            }
+            else if (radioButton6.Checked == true)
+            {
+                komut2.Parameters.AddWithValue("@p21", "Benzin");
+            }
+            else
+            {
+                komut2.Parameters.AddWithValue("@p21", "Seçim Yapılmadı");
+            }
+            komut2.ExecuteReader();
+
+            SqlCommand komut3 = new SqlCommand("insert into tip (arac_plaka,arac_tipi) values (@p41,@p40)", bgl.baglanti());
+            komut3.Parameters.AddWithValue("@p41", textBox1.Text);
+            komut3.Parameters.AddWithValue("@p40", "Otobüs");
+            komut3.ExecuteReader();
+
+            bgl.baglanti().Close();
+            MessageBox.Show("Araç Girişi Sağlanmıştır.");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            aracgirisi arcsec = new aracgirisi();
+            arcsec.Show();
+            this.Hide();
+        }
+    }
+}
